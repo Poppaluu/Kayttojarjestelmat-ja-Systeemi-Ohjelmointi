@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    ".fantomasignore": "ignore",
+    "*.rmd": "markdown",
+    "stdlib.h": "c"
+  }
+}
