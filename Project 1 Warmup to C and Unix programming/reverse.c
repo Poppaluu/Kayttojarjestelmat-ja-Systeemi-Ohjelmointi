@@ -1,5 +1,6 @@
 // https://stackoverflow.com/questions/2693776/removing-trailing-newline-character-from-fgets-input
 // chatgpt: strcmp when comparing file names
+// chatgpt: helped to set up the stdin and stdout in case of only one argument
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,34 +17,74 @@ int main(int argc, char *argv[])
     int size = 5;
     int count = 0;
 
-    if (argc > 3)
-    {
-        fprintf(stderr, "Usage: reverse <input file> <output file>\n");
-        exit(1);
-    }
-
-    // allocation of memory for the array of strings
+    // Memory allocation for the array of strings
     char **text = (char **)malloc(size * sizeof(char *));
 
-    // checking if memory allocation is succesful
+    // Error checking memory allocation
     if (text == NULL)
     {
         fprintf(stderr, "Memory allocation failed\n");
         exit(1);
     }
 
-    // Open the input file for reading
-    rfile = fopen(argv[1], "r");
-
-    // Open the output file for writing
-    wfile = fopen(argv[2], "w");
-
-    // input is the same as output
-    if (strcmp(argv[1], argv[2]) == 0)
+    // Only the ./reverse is given
+    if (argc == 1)
     {
-        fprintf(stderr, "Input and output file must differ");
+        rfile = stdin;
+        wfile = stdout;
+    }
+
+    // input file is given
+    else if (argc == 2)
+    {
+        rfile = fopen(argv[1], "r");
+
+        // Cant open input file
+        if (rfile == NULL)
+        {
+            fprintf(stderr, "Error: Cannot open file %s\n", argv[1]);
+            exit(1);
+        }
+        wfile = stdout;
+    }
+
+    // both input and output files are given
+    else if (argc == 3)
+    {
+        rfile = fopen(argv[1], "r");
+
+        // Cant open input file
+        if (rfile == NULL)
+        {
+            fprintf(stderr, "Error: Cannot open file %s\n", argv[1]);
+            exit(1);
+        }
+
+        wfile = fopen(argv[2], "w");
+
+        // Cant open output file
+        if (wfile == NULL)
+        {
+            fprintf(stderr, "Error: Cannot open file %s\n", argv[2]);
+            fclose(rfile);
+            exit(1);
+        }
+
+        // Check if input and output files are the same
+        if (strcmp(argv[1], argv[2]) == 0)
+        {
+            fprintf(stderr, "Error: Input and output file must differ\n");
+            fclose(rfile);
+            fclose(wfile);
+            exit(1);
+        }
+    }
+    // Too many arguments
+    else
+    {
+        fprintf(stderr, "Usage: reverse [input file] [output file]\n");
         exit(1);
-    };
+    }
 
     // Read each line from the file and add it to the list
     while ((read = getline(&line, &len, rfile)) != -1)
@@ -63,7 +104,7 @@ int main(int argc, char *argv[])
     }
 
     // print the array in reverse order
-    if (wfile == NULL)
+    if (wfile == stdout)
     {
         printf("\n\nText array:\n");
         for (int i = count - 1; i >= 0; i--)
