@@ -1,41 +1,48 @@
+// chatgpt: helped me with the fread
+
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2)
-    {
-        fprintf(stderr, "my-unzip: file1 [file2 ...]\n");
-        return 1;
-    }
 
     FILE *rfile;
     int nextFile = 1;
-    int runLength;
+    int length;
     char character;
+
+    if (argc < 2)
+    {
+        fprintf(stderr, "my-unzip: file1 [file2 ...]\n");
+        exit(1);
+    }
 
     // Read each file given
     while (argv[nextFile] != NULL)
     {
-        rfile = fopen(argv[nextFile], "rb"); // Open in binary mode
+        // open the file in binary
+        rfile = fopen(argv[nextFile], "rb");
+
+        // error checking the file open
         if (rfile == NULL)
         {
-            fprintf(stderr, "my-unzip: cannot open file %s\n", argv[i]);
-            return 1;
+            fprintf(stderr, "my-unzip: cannot open file %s\n", argv[nextFile]);
+            exit(1);
         }
 
-        // Read and decompress data
-        while (fread(&runLength, sizeof(int), 1, rfile) == 1)
+        // Read and decompress
+        while (fread(&length, sizeof(int), 1, rfile) == 1)
         {
+            // error checking the fread and assigning the character value
             if (fread(&character, sizeof(char), 1, rfile) != 1)
             {
                 fprintf(stderr, "my-unzip: file format error\n");
                 fclose(rfile);
-                return 1;
+                exit(1);
             }
 
-            // Output the character `runLength` times
-            for (int j = 0; j < runLength; j++)
+            // print the character as many times as it is in the file
+            for (int j = 0; j < length; j++)
             {
                 putchar(character);
             }
@@ -46,5 +53,5 @@ int main(int argc, char *argv[])
         nextFile++;
     }
 
-    return 0;
+    exit(0);
 }

@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         fprintf(stderr, "my-zip: file1 [file2 ...]\n");
-        return 1;
+        exit(1);
     }
 
     // Process each file
@@ -87,5 +87,5 @@ int main(int argc, char *argv[])
     // Free allocated memory
     free(line);
 
-    return 0;
+    exit(0);
 }

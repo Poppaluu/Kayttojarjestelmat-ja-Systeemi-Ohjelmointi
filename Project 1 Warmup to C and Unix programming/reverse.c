@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
         if (count >= size)
         {
             size += 10;
+            // reallocation if there are more lines than there is space on the array
             text = (char **)realloc(text, size * sizeof(char *));
             if (text == NULL)
             {
