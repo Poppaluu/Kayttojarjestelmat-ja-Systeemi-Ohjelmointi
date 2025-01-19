@@ -1,5 +1,6 @@
 // chatgpt: removal of the newline character
 // chatgpt: newline write
+// chatgpt: fwrite
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
     // Check for correct usage
     if (argc < 2)
     {
-        fprintf(stderr, "my-zip: file1 [file2 ...]\n");
+        fprintf(stderr, "my-zip: file1 [file2 ...] > filename.z\n");
         exit(1);
     }
 
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
             for (size_t i = 0; i < read; i++)
             {
 
+                // letter changes
                 if (checkChar != line[i] && checkChar != '\0')
                 {
                     // write the amount of the letter
@@ -63,7 +65,10 @@ int main(int argc, char *argv[])
                     // reset count
                     count = 0;
                 }
+
+                // change the character to the next one
                 checkChar = line[i];
+                // add to the count of a single character
                 count++;
             }
 

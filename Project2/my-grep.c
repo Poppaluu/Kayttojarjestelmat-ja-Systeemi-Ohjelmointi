@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     int nextFile = 2;
     int check = 0;
 
-    // Only the ./my-cat is given
+    // Only the ./my-grep is given
     if (argc == 1)
     {
         fprintf(stderr, "my-grep: searchterm [file ...]\n");
@@ -47,6 +47,10 @@ int main(int argc, char *argv[])
                         check = 0;
                         break;
                     }
+                }
+                else if (line[i] == argv[1][0])
+                {
+                    check = 1;
                 }
                 else
                 {
@@ -85,6 +89,10 @@ int main(int argc, char *argv[])
                             check = 0;
                             break;
                         }
+                    }
+                    else if (line[i] == argv[1][0])
+                    {
+                        check = 1;
                     }
                     else
                     {
