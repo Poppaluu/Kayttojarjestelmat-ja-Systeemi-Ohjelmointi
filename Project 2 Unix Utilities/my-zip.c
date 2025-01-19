@@ -1,4 +1,5 @@
-// chatgpt: newline stripping
+// chatgpt: removal of the newline character
+// chatgpt: newline write
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,73 +15,77 @@ int main(int argc, char *argv[])
     int nextFile = 1;
     char checkChar = '\0';
     int count = 0;
+    int newlineCount = 1;
 
-    // Only the ./my-zip is given
+    // Check for correct usage
     if (argc < 2)
     {
         fprintf(stderr, "my-zip: file1 [file2 ...]\n");
         return 1;
     }
 
-    // Read each file given
+    // Process each file
     while (argv[nextFile] != NULL)
     {
-        // Open input file
+        // Open the file
         rfile = fopen(argv[nextFile], "r");
 
-        // Cant open input file
+        // error in file reading
         if (rfile == NULL)
         {
-            fprintf(stderr, "my-grep: cannot open file %s\n", argv[nextFile]);
+            fprintf(stderr, "my-zip: cannot open file %s\n", argv[nextFile]);
             exit(1);
         }
 
-        // Read each line from the file
+        // Read each line
         while ((read = getline(&line, &len, rfile)) != -1)
         {
-            // Strip the newline character, if present
+            // Remove the newline character if present
             if (line[read - 1] == '\n')
             {
-                line[--read] = '\0'; // Reduce the length and null-terminate the string
+                // Null-terminate and reduce length
+                line[--read] = '\0';
             }
 
             checkChar = '\0';
             count = 0;
 
-            // Loop through each character in the line
+            // go through each character
             for (size_t i = 0; i < read; i++)
             {
-                // If the current character changes or it's the first character
+
                 if (checkChar != line[i] && checkChar != '\0')
                 {
-                    // printf("%i%c", count, checkChar); // Print count and character
+                    // write the amount of the letter
                     fwrite(&count, sizeof(int), 1, stdout);
+                    // write the character
                     fwrite(&checkChar, sizeof(char), 1, stdout);
-                    count = 0; // Reset count
+                    // reset count
+                    count = 0;
                 }
-
                 checkChar = line[i];
                 count++;
             }
 
-            // printf("\n"); // Add a newline after processing each line
+            // Write the last character group of the line
+            if (checkChar != '\0')
+            {
+                fwrite(&count, sizeof(int), 1, stdout);
+                fwrite(&checkChar, sizeof(char), 1, stdout);
+            }
+
+            // Write the newline
+            fwrite(&newlineCount, sizeof(int), 1, stdout);
+            fwrite("\n", sizeof(char), 1, stdout);
         }
 
-        // Print the last group after the loop ends
-        if (checkChar != '\0' && checkChar != '\n')
-        {
-            // printf("%i%c", count, checkChar);
-            fwrite(&count, sizeof(int), 1, stdout);
-            fwrite(&checkChar, sizeof(char), 1, stdout);
-        }
-
-        // close file
+        // Close the file
         fclose(rfile);
         nextFile++;
     }
 
-    // free memory
+    // Free allocated memory
     free(line);
 
-    exit(0);
+    return 0;
 }
