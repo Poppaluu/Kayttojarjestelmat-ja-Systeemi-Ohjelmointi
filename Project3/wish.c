@@ -75,12 +75,13 @@ void parse_and_execute(char *line)
         return;
     }
 
-    // Built-in command: exit
+    // exit the program
     if (strcmp(args[0], "exit") == 0)
     {
         if (argc != 1)
         {
             print_error("Can't exit due to too many arguments. Write 'exit' to exit the program\n");
+            return;
         }
         else
         {
@@ -254,5 +255,5 @@ int main(int argc, char *argv[])
         fclose(input);
     }
 
-    return 0;
+    exit(0);
 }
