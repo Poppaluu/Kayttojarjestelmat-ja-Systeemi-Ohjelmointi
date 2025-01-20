@@ -1,0 +1,7 @@
+batch.txt
+output.txt
+test
+test2
+test3
+wish
+wish.c
